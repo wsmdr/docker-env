@@ -17,7 +17,7 @@ RUN wget http://pecl.php.net/get/xdebug-2.5.1.tgz \
     && tar zxvf memcached-3.0.3.tgz -C /opt \
     && mv /opt/memcached-3.0.3 /usr/src/php/ext/memcached
 
-RUN /usr/local/bin/docker-php-ext-install pdo_mysql sockets gd opcache pcntl zip \
+RUN /usr/local/bin/docker-php-ext-install mcrypt pdo_mysql sockets gd opcache pcntl zip \
     xdebug redis memcached
 
 RUN docker-php-source delete && rm -rf /opt && apk del --purge
