@@ -3,7 +3,7 @@ FROM php:7.1.3-fpm-alpine
 MAINTAINER wsmdr wsmdr1986@gmail.com
 
 RUN apk update \
-    && apk add --no-cache libmcrypt-dev libpng-dev postgresql-dev cyrus-sasl-dev libmemcached-dev
+    && apk add --no-cache libmcrypt-dev libpng-dev cyrus-sasl-dev libmemcached-dev
 
 RUN docker-php-source extract
 RUN mkdir /opt && cd /opt
