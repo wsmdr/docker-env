@@ -1,7 +1,7 @@
 php:
     build: php
     volumes:
-      - ../laravel:/app
+      - /Users/wsmdr/Sites/l54:/app
 nginx:
     build: nginx
     volumes_from:

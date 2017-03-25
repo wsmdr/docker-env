@@ -1,5 +1,8 @@
 FROM nginx:alpine
 
-COPY ./nginx /etc/nginx/nginx.conf
+RUN addgroup -g 82 -S www-data \
+	&& adduser -u 82 -D -S -G www-data www-data
 
-COPY ./default /etc/nginx/conf.d/default.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+COPY ./default.conf /etc/nginx/conf.d/default.conf
