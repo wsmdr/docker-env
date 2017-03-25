@@ -22,5 +22,9 @@ RUN /usr/local/bin/docker-php-ext-install mcrypt pdo_mysql sockets gd opcache pc
 
 RUN docker-php-source delete && rm -rf /opt && apk del --purge
 
+COPY ./composer.phar /usr/local/bin/composer
+
+RUN chmod o+x /usr/local/bin/composer
+
 EXPOSE 9000
 CMD ["php-fpm"]
