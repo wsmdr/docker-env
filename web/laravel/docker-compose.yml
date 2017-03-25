@@ -1,0 +1,18 @@
+php:
+    build: php
+    volumes:
+      - ../laravel:/app
+nginx:
+    build: nginx
+    volumes_from:
+        - "php"
+    ports:
+      - "80:80"
+    links:
+      - "php"
+      - "redis"
+      - "memcached"
+redis:
+    build: redis
+memcached:
+    build: memcached
