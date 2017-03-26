@@ -4,13 +4,11 @@ php:
       - /Users/wsmdr/Sites:/app
     external_links:
       - redis_redis_1:redis_redis
-      - memcached_memcached_1:memcached_memcached
 nginx:
     build: nginx
-    volumes_from:
-        - "php"
     ports:
-      - "80:80"
+      - "8001:80"
     links:
+      - php
+    volumes_from:
       - "php"
-      
