@@ -5,4 +5,6 @@ RUN addgroup -g 82 -S www-data \
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+ARG DEPLOY_WEB_CONFIG='';
+
+COPY ./${DEPLOY_WEB_CONFIG}.conf /etc/nginx/conf.d/default.conf

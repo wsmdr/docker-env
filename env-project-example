@@ -1,0 +1,20 @@
+# docker-compose php 环境配置
+
+# Application 根目录 host路径
+APPLICATION_NAME=laravel
+ROOT_DIR=~/Sites/l54
+
+# Xdebug host
+XDEBUG_REMOTE_HOST=10.200.10.1
+
+
+# application web服务默认端口
+NGINC_PORTS_DEFAULT=80
+NGINX_HTTPS_PORTS_DEFAULT=443
+
+
+
+# mysql 数据库 host存放地址
+MYSQL_DATA=~/mysql_data
+MYSQL_PORTS=3306
+MYSQL_ROOT_PASSWORD=123456

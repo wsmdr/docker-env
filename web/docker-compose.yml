@@ -1,0 +1,46 @@
+version: '2'
+
+services:
+
+    nginx:
+        build:
+            context: ./nginx
+            args:
+                - DEPLOY_WEB_CONFIG=${APPLICATION_NAME}
+        depends_on:
+            - php
+            - mysql
+            - redis_redis
+        ports:
+            - ${NGINC_PORTS_DEFAULT}:80
+            - ${NGINX_HTTPS_PORTS_DEFAULT}:443
+        links:
+            - php
+        volumes_from:
+            - php
+
+    php:
+        build:
+            context: ./php
+        volumes:
+            - ${ROOT_DIR}:/app
+        links:
+            - redis_redis
+            - mysql
+        depends_on:
+            - redis_redis
+            - mysql
+
+    mysql:
+        image: mysql:5.7
+        volumes:
+            - ${MYSQL_DATA}:/var/lib/mysql
+        ports:
+            - ${MYSQL_PORTS}:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+    redis_redis:
+        image: redis:3.0.7-alpine
+        ports:
+            - 6379:6379
