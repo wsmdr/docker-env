@@ -7,8 +7,8 @@ insert_final_newline = true
 charset = utf-8
 
 [{Dockerfile,docker-compose.yml}]
-indent_style = tab
-tab_width = 4
+indent_style = space
+indent_size = 2
 
 [*.{conf,ini}]
 indent_style = tab
