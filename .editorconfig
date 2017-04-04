@@ -6,6 +6,10 @@ insert_final_newline = true
 
 charset = utf-8
 
-[{Dockerfile,*.{conf,yml}}]
+[{Dockerfile,docker-compose.yml}]
+indent_style = tab
+tab_width = 4
+
+[*.{conf,ini}]
 indent_style = tab
 tab_width = 4
