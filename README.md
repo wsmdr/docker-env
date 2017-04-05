@@ -2,7 +2,7 @@
 
 本项目包含
 * php-fpm-7.1.3
-* nginx-1.10.1
+* nginx-1.11.10
 * mysql-5.7
 * redis-3.0.7
 
