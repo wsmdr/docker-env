@@ -9,8 +9,6 @@ services:
                 - DEPLOY_WEB_CONFIG=${APPLICATION_NAME}
         depends_on:
             - php
-            - mysql
-            - redis_redis
         ports:
             - ${NGINC_PORTS_DEFAULT}:80
             - ${NGINX_HTTPS_PORTS_DEFAULT}:443
@@ -25,10 +23,10 @@ services:
         volumes:
             - ${ROOT_DIR}:/app
         links:
-            - redis_redis
+            - redis
             - mysql
         depends_on:
-            - redis_redis
+            - redis
             - mysql
 
     mysql:
@@ -40,7 +38,30 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
-    redis_redis:
+    redis:
         image: redis:3.0.7-alpine
         ports:
             - 6379:6379
+
+    redisadmin:
+      build:
+        context: ./redisadmin
+      ports:
+        - 8007:80
+      volumes_from:
+        - php
+      links:
+        - php
+        - redis
+      depends_on:
+        - php
+        - redis
+
+    es:
+      build:
+        context: ./elasticsearch
+      volumes:
+        - ${ELASTICSEARCH_DATA}:/usr/share/elasticsearch/data
+      ports:
+        - 9200:9200
+        - 9300:9300
