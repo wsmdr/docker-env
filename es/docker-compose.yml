@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    es:
+      build:
+        context: ./elasticsearch
+      volumes:
+        - ~/.esdata:/usr/share/elasticsearch/data
+      ports:
+        - 9200:9200
+        - 9300:9300
+
+    ui:
+      image: mobz/elasticsearch-head:5-alpine
+      ports:
+        - 9100:9100
+      links:
+        - es
+
