@@ -13,8 +13,6 @@ ENV PHPIZE_DEPS \
   pkgconf \
   re2c
 
-ADD mcrypt-1.0.1.tgz /usr/src
-
 ADD xdebug-2.6.0.tgz /usr/src
 
 COPY ./repositories /etc/apk/repositories
@@ -22,11 +20,10 @@ COPY ./repositories /etc/apk/repositories
 RUN apk update \
     && apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
-    libmcrypt-dev libpng-dev \
+    libpng-dev \
     && docker-php-source extract \
     && mv /usr/src/xdebug-2.6.0 /usr/src/php/ext/xdebug \
-    && mv /usr/src/mcrypt-1.0.1 /usr/src/php/ext/mcrypt \
-    && docker-php-ext-install mcrypt pdo_mysql sockets gd opcache pcntl zip xdebug \
+    && docker-php-ext-install pdo_mysql sockets gd opcache pcntl zip xdebug \
     && runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 			| tr ',' '\n' \
