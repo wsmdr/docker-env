@@ -47,6 +47,6 @@ RUN apk add --no-cache --virtual .build-deps \
     && rm -rf hiredis-0.13.3 \
     && rm -rf /usr/src/swoole-2.1.3.tgz \
     && rm -rf /usr/src/redis-4.0.2.tgz \
-    && rm -rf /usr/src/v0.13.3.tar.gz \
+    && rm -rf /usr/src/v0.13.3.tar.gz
 
 CMD ["php", "-a"]
