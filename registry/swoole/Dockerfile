@@ -22,7 +22,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && cd /usr/src \
     && wget https://pecl.php.net/get/swoole-2.1.3.tgz \
     && wget https://pecl.php.net/get/redis-4.0.2.tgz \
-    && wget wget https://github.com/redis/hiredis/archive/v0.13.3.tar.gz \
+    && wget https://github.com/redis/hiredis/archive/v0.13.3.tar.gz \
     && tar -xzvf v0.13.3.tar.gz \
     && cd hiredis-0.13.3 \
     && make clean \
