@@ -23,13 +23,13 @@ RUN apk add --no-cache --virtual .build-deps \
     && wget https://pecl.php.net/get/swoole-2.1.3.tgz \
     && wget https://pecl.php.net/get/redis-4.0.2.tgz \
     && wget wget https://github.com/redis/hiredis/archive/v0.13.3.tar.gz \
-    && tar -xzvf v0.13.3.tar.gz
-    && cd hiredis-0.13.3
-    && make clean
+    && tar -xzvf v0.13.3.tar.gz \
+    && cd hiredis-0.13.3 \
+    && make clean \
     && make -j \
-    && make install
+    && make install \
     && cd /usr/src \
-    && tar -xzvf swoole-2.1.3.tgz
+    && tar -xzvf swoole-2.1.3.tgz \
     && tar -xzvf redis-4.0.2.tgz \
     && mv /usr/src/swoole-2.1.3 /usr/src/php/ext/swoole \
     && mv /usr/src/redis-4.0.2 /usr/src/php/ext/redis \
@@ -42,7 +42,7 @@ RUN apk add --no-cache --virtual .build-deps \
 			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 	  )" \
 	  && apk add --no-cache --virtual .php-rundeps $runDeps \
-    && docker-php-source delete
+    && docker-php-source delete \
     && apk del .build-deps \
     && rm -rf hiredis-0.13.3 \
     && rm -rf /usr/src/swoole-2.1.3.tgz \
