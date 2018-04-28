@@ -49,4 +49,12 @@ RUN apk add --no-cache --virtual .build-deps \
     && rm -rf /usr/src/redis-4.0.2.tgz \
     && rm -rf /usr/src/v0.13.3.tar.gz
 
+COPY ./composer.phar /usr/local/bin/composer
+
+RUN chmod +x /usr/local/bin/composer
+
+RUN mkdir -p /app
+
+WORKDIR /app
+
 CMD ["php", "-a"]
