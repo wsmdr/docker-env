@@ -1,11 +1,17 @@
 FROM php:7.2.4-fpm-alpine
 
-LABEL maintainer "wsmdr1986@gmail.com"
+LABEL maintainer="wsmdr1986@gmail.com"
 
 ENV PHPIZE_DEPS \
   autoconf \
   dpkg-dev dpkg \
+  freetype \
+  freetype-dev \
+  libjpeg-turbo \
+  libjpeg-turbo-dev \
+  libpng-dev \
   file \
+  libbsd \
   g++ \
   gcc \
   libc-dev \
@@ -20,10 +26,16 @@ COPY ./repositories /etc/apk/repositories
 RUN apk update \
     && apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
-    libpng-dev \
     && docker-php-source extract \
     && mv /usr/src/xdebug-2.6.0 /usr/src/php/ext/xdebug \
-    && docker-php-ext-install pdo_mysql sockets gd opcache pcntl zip xdebug \
+    && docker-php-ext-configure gd \
+        --with-gd \
+        --with-freetype-dir=/usr/include/ \
+        --with-png-dir=/usr/include/ \
+        --with-jpeg-dir=/usr/include/ && \
+      NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
+    && docker-php-ext-install -j${NPROC} gd\
+    && docker-php-ext-install bcmath pdo_mysql sockets gd opcache pcntl zip xdebug \
     && runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 			| tr ',' '\n' \
