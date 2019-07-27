@@ -1,4 +1,4 @@
-FROM php:7.2.4-cli-alpine
+FROM php:7.2-cli-alpine
 
 LABEL maintainer="wsmdr1986@gmail.com"
 
@@ -9,32 +9,43 @@ ENV PHPIZE_DEPS \
   g++ \
   gcc \
   libc-dev \
+  libpng-dev \
   make \
   pkgconf \
   re2c \
-  pcre-dev
+  pcre-dev \
+  openssl-dev
 
-COPY ./repositories /etc/apk/repositories
+# --build-arg timezone=Asia/Shanghai
+ARG timezone
+# app env: prod pre test dev
+ARG app_env=prod
+# default use www-data user
+ARG work_user=www-data
 
-RUN apk add --no-cache --virtual .build-deps \
+
+ENV APP_ENV=${app_env:-"prod"} \
+    TIMEZONE=${timezone:-"Asia/Shanghai"} \
+    PHPREDIS_VERSION=4.3.0 \
+    SWOOLE_VERSION=4.4.1 \
+    COMPOSER_VERSION=1.8.6
+
+RUN echo "http://mirrors.aliyun.com/alpine/v3.10/main" > /etc/apk/repositories \
+    && echo "http://mirrors.aliyun.com/alpine/v3.10/community" >> /etc/apk/repositories \
+    && apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
     && docker-php-source extract \
+    && docker-php-ext-install bcmath gd pdo_mysql mbstring sockets zip sysvmsg sysvsem sysvshm \
     && cd /usr/src \
-    && wget https://pecl.php.net/get/swoole-2.1.3.tgz \
-    && wget https://pecl.php.net/get/redis-4.0.2.tgz \
-    && wget https://github.com/redis/hiredis/archive/v0.13.3.tar.gz \
-    && tar -xzvf v0.13.3.tar.gz \
-    && cd hiredis-0.13.3 \
-    && make clean \
-    && make -j \
-    && make install \
+    && curl -O http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz \
+    && curl -O http://pecl.php.net/get/redis-${PHPREDIS_VERSION}.tgz \
     && cd /usr/src \
-    && tar -xzvf swoole-2.1.3.tgz \
-    && tar -xzvf redis-4.0.2.tgz \
-    && mv /usr/src/swoole-2.1.3 /usr/src/php/ext/swoole \
-    && mv /usr/src/redis-4.0.2 /usr/src/php/ext/redis \
-    && docker-php-ext-configure swoole --enable-async-redis \
-    && docker-php-ext-install bcmath pdo_mysql pcntl redis swoole \
+    && tar -xzvf swoole-${SWOOLE_VERSION}.tgz \
+    && tar -xzvf redis-${PHPREDIS_VERSION}.tgz \
+    && mv /usr/src/swoole-${SWOOLE_VERSION} /usr/src/php/ext/swoole \
+    && mv /usr/src/redis-${PHPREDIS_VERSION} /usr/src/php/ext/redis \
+    && docker-php-ext-configure swoole --enable-mysqlnd --enable-sockets --enable-openssl --enable-http2 \
+    && docker-php-ext-install redis swoole \
     && runDeps="$( \
 		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 			| tr ',' '\n' \
@@ -44,14 +55,11 @@ RUN apk add --no-cache --virtual .build-deps \
 	  && apk add --no-cache --virtual .php-rundeps $runDeps \
     && docker-php-source delete \
     && apk del .build-deps \
-    && rm -rf hiredis-0.13.3 \
-    && rm -rf /usr/src/swoole-2.1.3.tgz \
-    && rm -rf /usr/src/redis-4.0.2.tgz \
-    && rm -rf /usr/src/v0.13.3.tar.gz
-
-COPY ./composer.phar /usr/local/bin/composer
-
-RUN chmod +x /usr/local/bin/composer
+    && rm -rf /usr/src/swoole-${SWOOLE_VERSION}.tgz \
+    && rm -rf /usr/src/redis-${PHPREDIS_VERSION}.tgz \
+    && curl -o /usr/local/bin/composer https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar \
+    && chmod +x /usr/local/bin/composer \
+    && echo "[Date]\ndate.timezone=${TIMEZONE}" > /usr/local/etc/php/conf.d/timezone.ini
 
 RUN mkdir -p /app
 
